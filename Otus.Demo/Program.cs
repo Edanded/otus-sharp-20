@@ -1,11 +1,4 @@
-﻿#define STOP1
-
-#if DEBUG
-
-#undef STOP1
-
-#endif
-using Otus.Lib4Preprocessor;
+﻿using Otus.Lib4Preprocessor;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,7 +17,8 @@ namespace Otus.Demo
     {
         static void Main(string[] args)
         {
-            var cl = new Class2();
+            //new UnsafeDemo().Show();
+            new UnsafeDemo().Show();
 #if STOP1
 #error У нас ошибка
 #endif

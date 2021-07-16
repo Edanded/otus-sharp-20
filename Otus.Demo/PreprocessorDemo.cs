@@ -31,7 +31,9 @@ namespace Otus.Demo
 #if _WINDOWS
 #line 200 "название текста"
 #endif
+#pragma warning disable CS0219 // Переменная назначена, но ее значение не используется
             int i = 2;
+#pragma warning restore CS0219 // Переменная назначена, но ее значение не используется
 
 #if Abracadabra
 #define ALIBABA

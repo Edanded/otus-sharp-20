@@ -4,7 +4,7 @@ using System.Dynamic;
 using System.Linq;
 
 using Excel = Microsoft.Office.Interop.Excel;
-using Word = Microsoft.Office.Interop.Word;
+
 
 namespace Otus.Demo
 {
@@ -15,17 +15,17 @@ namespace Otus.Demo
 
     public class Paper : TrashItem { }
 
-public class TrashDispancer
-{
-    public void Dispance(TrashItem item)
-    => DispancePlease(item as dynamic);
+    public class TrashDispancer
+    {
+        public void Dispance(TrashItem item)
+        => DispancePlease(item as dynamic);
 
-    private void DispancePlease(Can can)
-    => Console.WriteLine("Dispancing can");
+        private void DispancePlease(Can can)
+        => Console.WriteLine("Dispancing can");
 
-    private void DispancePlease(Paper paper)
-    => Console.WriteLine("Dispancing paper");
-}
+        private void DispancePlease(Paper paper)
+        => Console.WriteLine("Dispancing paper");
+    }
 
 
 
@@ -44,14 +44,14 @@ public class TrashDispancer
         }
 
 
-interface IVehicle { }
+        interface IVehicle { }
 
-class Car : IVehicle
-{
-    public string Engine;
-}
+        class Car : IVehicle
+        {
+            public string Engine;
+        }
 
-private IVehicle V8() => new Car { Engine = "V8" };
+        private IVehicle V8() => new Car { Engine = "V8" };
 
         private void BasicExpandoDemo()
         {
@@ -116,7 +116,7 @@ private IVehicle V8() => new Car { Engine = "V8" };
         }
     }
 
-    class ExcellDemo
+    public class ExcellDemo
     {
         public void Demo()
         {
@@ -125,13 +125,14 @@ private IVehicle V8() => new Car { Engine = "V8" };
                 Visible = true
             };
 
-            excelApp.Workbooks.Add();
+            var wbook = excelApp.Workbooks.Add();
 
 
             var workSheet = (Excel.Worksheet)excelApp.ActiveSheet;
             var r = workSheet.Cells[1, 'A'];
             dynamic column = workSheet.Columns[1];
             column.AutoFit();
+            wbook.SaveAs("f.xlsx");
 
         }
     }
@@ -164,12 +165,12 @@ private IVehicle V8() => new Car { Engine = "V8" };
         private List<AccessRow> _data = new List<AccessRow>
         {
 
-            new AccessRow("Order.Price",read:true, write:false),
-            new AccessRow("Order.Quantity",read:true, write:true),
-            new AccessRow("Order.Item",read:true, write:true),
-            new AccessRow("Order",read:true, write:true),
-            new AccessRow("Order.Item.InnerCode",read:false, write:false),
-            new AccessRow("Order.Item.Name",read:false, write:true),
+            new AccessRow("Order.Price", read: true, write: false),
+            new AccessRow("Order.Quantity", read: true, write: true),
+            new AccessRow("Order.Item", read: true, write: true),
+            new AccessRow("Order", read: true, write: true),
+            new AccessRow("Order.Item.InnerCode", read: false, write: false),
+            new AccessRow("Order.Item.Name", read: false, write: true),
 
             /* 
              * 
@@ -184,7 +185,7 @@ private IVehicle V8() => new Car { Engine = "V8" };
              *          write: true,
              *          Price: {
              *              read: true, 
-             *              write:false,
+             *              write: false,
              *          },
              *          Quantity: {
              *              read: true,
@@ -258,4 +259,26 @@ private IVehicle V8() => new Car { Engine = "V8" };
 
 
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

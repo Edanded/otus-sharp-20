@@ -1,51 +1,102 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Linq;
 
 namespace Otus.Demo
 {
     class Foo { }
     public class UnsafeDemo : IBaseDemo
     {
+
+#line 1
+
         private long ticks = 1_000_000;
-        public unsafe void CheckUnsafeAllocation()
+
+
+
+        public string RandomString(int length)
         {
-            long l = 0;
-            for (var i = 0; i < ticks; i++)
-            {
-                var r = new Foo();
-            }
+            var r = new Random();
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+              .Select(s => 'a').ToArray());
         }
 
-        public void CheckNormalAllocation()
+
+
+
+        private void CheckSpeed()
         {
-            long l = 0;
-            for (var i = 0; i < ticks; i++)
+            var s = RandomString(30_000_000);
+            var stopwatch = new Stopwatch();
+
+
+            var a = 0;
+            var sLength = s.Length;
+            unsafe
             {
-                var r = new Foo();
+                stopwatch.Start();
+                fixed (char* p = s)
+                {
+                    char* q = p;
+                    while (*q != '\0')
+                    {
+                        var f = *q;
+                        //    a++;
+                        q++;
+                    }
+                }
+                stopwatch.Stop();
+                Console.WriteLine($"pointer = {stopwatch.ElapsedMilliseconds}");
+
             }
+
+            stopwatch.Reset();
+            stopwatch.Start();
+            a = 0;
+
+            //while (a < sLength)
+            //{
+            //    var f = s[a];
+            //    a++;
+            //}
+
+            var en = s.GetEnumerator();
+
+            while (en.MoveNext())
+            {
+              var  f = s[a];
+                a++;
+            }
+
+            stopwatch.Stop();
+            Console.WriteLine($"clr = {stopwatch.ElapsedMilliseconds}");
         }
+
+
+
+
 
         private void Move()
         {
             var a = new int[5] { 10, 20, 30, 40, 50 };
-            // Must be in unsafe code to use interior pointers.
+
             unsafe
             {
-                // Must pin object on heap so that it doesn't move while using interior pointers.
-                // Ф
                 fixed (int* p = &a[0])
                 {
 
-                    // p is pinned as well as object, so create another pointer to show incrementing it.
+
                     int* p2 = p;
                     Console.WriteLine(*p2);
-                    // Incrementing p2 bumps the pointer by four bytes due to its type ...
+
                     p2 += 1;
                     Console.WriteLine(*p2);
                     p2 += 1;
                     Console.WriteLine(*p2);
                     Console.WriteLine("--------");
                     Console.WriteLine(*p);
-                    // Dereferencing p and incrementing changes the value of a[0] ...
+
                     *p += 1;
                     Console.WriteLine(*p);
                     *p += 1;
@@ -57,18 +108,34 @@ namespace Otus.Demo
             Console.WriteLine(a[0]);
         }
 
+        private void SafeRefs()
+        {
+            int a = 2;
+
+            ref int p = ref a;
+
+            a = 5;
+            Console.WriteLine($"p is {p}");
+
+        }
+
         private unsafe void PrintWord()
         {
             string s = "Привет";
 
 
 
+
+            //      2Б  2Б  2Б  2Б  2Б  2Б
+            // p -> [П] [р] [и] [в] [е] [т]
+
+
             fixed (char* p = s)
             {
 
-                char* p1 = &p[9];
-                Console.WriteLine($"address {(long)p1} {(long)(p1 + 1)}");
-                for (var i = 0; i <= 10; i++)
+                char* p1 = &p[2];
+                Console.WriteLine($"address current {(long)p1} next {(long)(p1 + 1)}");
+                for (var i = 0; p[i] != '\0'; i++)
                 {
                     Console.WriteLine($"Values is {p[i]} memory address {(long)&p[i]}");
                 }
@@ -121,6 +188,8 @@ namespace Otus.Demo
 
             Console.WriteLine($"first = {first}");
 
+            first = 555;
+            Console.WriteLine($"*p = {*p}");
             // Присваиваем p - адрес в памяти
             // где хранится second 
             p = q;
@@ -132,10 +201,13 @@ namespace Otus.Demo
 
         public void Show()
         {
+
+            CheckSpeed();
+            return;
             PrintWord();
             ShowSimple();
             ShowSwap();
-            return;
+
 
         }
     }
